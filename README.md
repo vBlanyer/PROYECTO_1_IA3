@@ -1,0 +1,3 @@
+Programa de aplicacion de Red Neuronal Feedforward 
+
+Tenemos la siguinetes extructura ...
