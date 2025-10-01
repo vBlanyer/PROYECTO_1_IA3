@@ -2,16 +2,19 @@ import torch
 import numpy as np
 from data.preprocessor import preprocess_data
 
+# Función que toma un modelo entrenado y un CSV, y realiza predicciones mostrando resultados comparativos.
+# Hace predicciones, revierte la transformación logarítmica aplicada durante el preprocesamiento, calcula el error (RMSE), y muestra
+# ejemplos comparativos.
 def predict_from_csv(model, csv_path, test_size=0.2):
       print("\n--- Predicción desde CSV ---")
-      X_train, y_train, X_test, y_test = preprocess_data(csv_path)
+      X_train, y_train, X_test, y_test = preprocess_data(csv_path) # Preprocesamiento de datos
 
-      with torch.no_grad():
-            y_pred_log = model(X_test)
-            y_pred_real = np.expm1(y_pred_log.numpy()).flatten()
-            y_test_real = np.expm1(y_test.numpy()).flatten()
+      with torch.no_grad(): # Desactiva el cálculo de gradientes para eficiencia
+            y_pred_log = model(X_test) # Predicciones en escala logarítmica
+            y_pred_real = np.expm1(y_pred_log.numpy()).flatten() # Revertir la transformación logarítmica
+            y_test_real = np.expm1(y_test.numpy()).flatten() # Revertir la transformación logarítmica
 
-      rmse = np.sqrt(np.mean((y_pred_real - y_test_real) ** 2))
+      rmse = np.sqrt(np.mean((y_pred_real - y_test_real) ** 2)) # Cálculo del RMSE (Root Mean Squared Error)
       print(f"RMSE en streams reales: {rmse:,.0f}")
 
       print("\nEjemplos de predicción:")

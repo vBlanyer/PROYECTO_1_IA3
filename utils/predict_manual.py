@@ -3,9 +3,9 @@ import torch
 import numpy as np
 from data.preprocessor import get_feature_names, get_label_encoders, get_scaler   
 
+# Función que permite ingresar manualmente los valores de las características para hacer una predicción con el modelo entrenado.
 def predict_manual(model, feature_count):
       print("\n--- Predicción manual ---")
-      from data.preprocessor import get_feature_names, get_label_encoders
       feature_names = get_feature_names()
       encoders = get_label_encoders()
       sample = []
@@ -21,8 +21,7 @@ def predict_manual(model, feature_count):
             else:
                   val = float(input(f"Introduce valor para '{name}': "))
             sample.append(val)
-
-      from data.preprocessor import get_scaler
+            
       scaler = get_scaler()
       sample_scaled = scaler.transform([sample])
       X_manual = torch.tensor(sample_scaled, dtype=torch.float32)
@@ -31,3 +30,5 @@ def predict_manual(model, feature_count):
             y_pred_real = np.expm1(y_pred_log.numpy())[0][0]
 
       print(f"\nPredicción de streams: {int(y_pred_real):,}")
+
+

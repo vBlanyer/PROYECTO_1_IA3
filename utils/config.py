@@ -1,3 +1,4 @@
+# Configuraciones clave para el proyecto, como rutas de datos, tamaños de capas de la red, tasa de aprendizaje, etc.
 config = {
       "data_path": "data/Popular_Spotify_Songs.csv",
       "input_size": 10,

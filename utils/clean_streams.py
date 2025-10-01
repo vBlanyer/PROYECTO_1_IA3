@@ -1,3 +1,5 @@
+# Convierte valores de streams musicales (como "1.2M", "3,500", "2B") en números flotantes (tipo ) para ser usados en cálculos o modelos
+# de machine learning.
 def clean_streams(x):
       if isinstance(x, str):
             x = x.replace(",", "").strip()  # quitar comas y espacios
