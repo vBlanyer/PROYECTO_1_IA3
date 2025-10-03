@@ -7,9 +7,22 @@ class FeedforwardNN(nn.Module):
       # output_size es el número de salidas (1 para regresión, más para clasificación multiclase).
       def __init__(self, input_size, hidden_size, output_size):
             super().__init__()
-            self.fc1 = nn.Linear(input_size, hidden_size) # Capa totalmente conectada de entrada a oculta
-            self.relu = nn.ReLU()                          # Función de activación ReLU para introducir no linealidad
-            self.fc2 = nn.Linear(hidden_size, output_size) # Capa totalmente conectada de oculta a salida
+            # Red de 1 capa:
+            '''self.fc1 = nn.Linear(input_size, hidden_size) # Capa totalmente conectada de entrada a oculta
+            #self.relu = nn.ReLU()                          # Función de activación ReLU para introducir no linealidad
+            # Usaremos la funcion de activacion LeakyReLU en lugar de ReLU ya que ReLU convierte valores negativos a 0 despues de la primera capa, lo que
+            # nos puede hacer perder informacion util. 
+            self.relu = nn.LeakyReLU(0.01)                 # Función de activación LeakyReLU para introducir no linealidad
+            self.fc2 = nn.Linear(hidden_size, output_size) # Capa totalmente conectada de oculta a salida'''
+
+            # Red de 2 capas:
+            self.fc1 = nn.Linear(input_size, hidden_size)       # Entrada → primera capa oculta
+            self.relu1 = nn.LeakyReLU(0.01)                      # Activación 1
+            self.fc2 = nn.Linear(hidden_size, hidden_size // 2) # Segunda capa oculta (menos neuronas)
+            self.relu2 = nn.LeakyReLU(0.01)                      # Activación 2
+            self.fc3 = nn.Linear(hidden_size // 2, output_size) # Capa de salida
+
+
 
       # Este método define cómo fluye la información:
       # - x entra a la capa fc1.
@@ -17,5 +30,11 @@ class FeedforwardNN(nn.Module):
       # que no se pueden representar con líneas rectas.
       # - El resultado pasa a fc2, que genera la salida final.
       def forward(self, x):
-            x = self.relu(self.fc1(x))
-            return self.fc2(x)
+            # Red de 1 capa:
+            '''x = self.relu(self.fc1(x))
+            return self.fc2(x)'''
+      
+            # Red de 2 capas:
+            x = self.relu1(self.fc1(x))
+            x = self.relu2(self.fc2(x))
+            return self.fc3(x)
