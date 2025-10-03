@@ -78,7 +78,6 @@ def preprocess_data(path, target_column="popularity"):
       # Codificación de columnas de texto a numeros para que el modelo pueda trabajar con ellos y guardar los encoders
       for col in ["artists", "album_name", "track_name", "explicit", "track_genre"]:
             if col in df.columns:
-                  print(col)
                   encoder = LabelEncoder()
                   df[col] = encoder.fit_transform(df[col].astype(str))
                   _label_encoders[col] = encoder
