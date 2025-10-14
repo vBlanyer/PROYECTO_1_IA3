@@ -2,6 +2,7 @@ import torch
 import os
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 from data.preprocessor import preprocess_data
 from models.feedforward import FeedforwardNN
 from train.trainer import train_model
@@ -9,6 +10,8 @@ from utils.config import config
 from utils.predict_manual import predict_manual
 from utils.predict_from_csv import predict_from_csv
 from utils.clean_lines import clean_csv_file
+from utils.plots import covergence_rmse, real_vs_predict
+
 # Debugging configuración del modelo (imprime los parámetros clave)
 print("Configuración del modelo:")
 for key, value in config.items():
@@ -33,8 +36,8 @@ model = FeedforwardNN(input_size, config["hidden_size"], config["output_size"])
 criterion = torch.nn.MSELoss() # Función de pérdida (MSE para regresión)
 optimizer = torch.optim.Adam(model.parameters(), lr=config["learning_rate"]) # Optimizador Adam con la tasa de aprendizaje del config
 
-train_model(model, X_train, y_train, criterion, optimizer, # Entrena el modelo
-            config["epochs"], config["batch_size"])
+# Entrenamos el modelo (rmse_history se usara para graficar la convergencia)
+rmse_history = train_model(model, X_train, y_train, criterion, optimizer, config["epochs"], config["batch_size"])
 
 with torch.no_grad():
     predictions = model(X_test) # Estamos pasando datos de entrada (X_test) a través del modelo para obtener una predicción. Internamente,
@@ -81,4 +84,8 @@ elif mode == "2":
                                                             # se hacia otro preprocess_data dentro de la funcion, lo que puede hacer que los encoders 
                                                             # cambien y por ende, el ramdom=42 no se cumpla (la semilla para los conjuntos de entrenamiento
                                                             # y prueba cambien)
-    predict_from_csv(loaded_model, X_test, y_test, test_size)                                                         
+    predict_from_csv(loaded_model, X_test, y_test, test_size)
+    
+# Graficas
+covergence_rmse(rmse_history)
+real_vs_predict(y_test, loaded_predictions)

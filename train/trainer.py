@@ -12,6 +12,9 @@ def train_model(model, X_train, y_train, criterion, optimizer, epochs=20, batch_
       dataset = TensorDataset(X_train, y_train) # Combina X_train y y_train en un solo objeto.
       loader = DataLoader(dataset, batch_size=batch_size, shuffle=True) # El DataLoader divide el dataset en lotes de tamaño batch_size y los
                                                                         # mezcla aleatoriamente (shuffle=True) en cada época.
+                                                                        
+      rmse_history = [] # para llevar un registro del RMSE por epoca
+      
       # Bucle de entrenamiento
       for epoch in range(epochs):
             total_loss = 0
@@ -24,3 +27,13 @@ def train_model(model, X_train, y_train, criterion, optimizer, epochs=20, batch_
                   optimizer.step() # Actualiza los pesos del modelo.
                   total_loss += loss.item() # Acumula la pérdida para monitorear el progreso.
             print(f"Epoch {epoch+1}/{epochs}, Loss: {total_loss:.4f}") # Imprime la pérdida total al final de cada época.
+            
+            # ahora evaluamos el RMSE sobre todo el conjunto de entrenamiento
+            model.eval()
+            with torch.no_grad():
+                  predictions = model(X_train)
+                  mse = criterion(predictions, y_train).item()
+                  rmse = mse ** 0.5
+                  rmse_history.append(rmse)
+            
+      return rmse_history
