@@ -1,14 +1,14 @@
 import torch.nn as nn
 
 # Clase que hereda de nn.Module, lo que la convierte en un modelo de PyTorch. Dentro de ella se define la arquitectura y el flujo de datos
-class FeedforwardNN(nn.Module):
+'''class FeedforwardNN(nn.Module):
       # Constructor que define las capas de la red. input_size es el número de características de entrada (por ejemplo, 10 si se usan las columnas del CSV).
       # hidden_size es el número de neuronas en la capa oculta (un hiperparámetro que se puede ajustar).
       # output_size es el número de salidas (1 para regresión, más para clasificación multiclase).
       def __init__(self, input_size, hidden_size, output_size):
-            super().__init__()
+            super().__init__()'''
             # Red de 1 capa:
-            '''self.fc1 = nn.Linear(input_size, hidden_size) # Capa totalmente conectada de entrada a oculta
+'''         self.fc1 = nn.Linear(input_size, hidden_size) # Capa totalmente conectada de entrada a oculta
             #self.relu = nn.ReLU()                          # Función de activación ReLU para introducir no linealidad
             # Usaremos la funcion de activacion LeakyReLU en lugar de ReLU ya que ReLU convierte valores negativos a 0 despues de la primera capa, lo que
             # nos puede hacer perder informacion util. 
@@ -16,25 +16,41 @@ class FeedforwardNN(nn.Module):
             self.fc2 = nn.Linear(hidden_size, output_size) # Capa totalmente conectada de oculta a salida'''
 
             # Red de 2 capas:
-            self.fc1 = nn.Linear(input_size, hidden_size)       # Entrada → primera capa oculta
+'''         self.fc1 = nn.Linear(input_size, hidden_size)       # Entrada → primera capa oculta
             self.relu1 = nn.LeakyReLU(0.01)                      # Activación 1
             self.fc2 = nn.Linear(hidden_size, hidden_size // 2) # Segunda capa oculta (menos neuronas)
             self.relu2 = nn.LeakyReLU(0.01)                      # Activación 2
-            self.fc3 = nn.Linear(hidden_size // 2, output_size) # Capa de salida
-
-
+            self.fc3 = nn.Linear(hidden_size // 2, output_size) # Capa de salida'''
 
       # Este método define cómo fluye la información:
       # - x entra a la capa fc1.
       # - Se aplica ReLU para introducir no linealidad lo que permite que la red aprenda curvas, interacciones complejas entre variables y patrones
       # que no se pueden representar con líneas rectas.
       # - El resultado pasa a fc2, que genera la salida final.
-      def forward(self, x):
+      #def forward(self, x):
             # Red de 1 capa:
-            '''x = self.relu(self.fc1(x))
+'''         x = self.relu(self.fc1(x))
             return self.fc2(x)'''
       
             # Red de 2 capas:
-            x = self.relu1(self.fc1(x))
+'''         x = self.relu1(self.fc1(x))
             x = self.relu2(self.fc2(x))
-            return self.fc3(x)
+            return self.fc3(x)'''
+
+# Red que usa sigmoide como funcion de activacion en la capa de salida (Red de 2 capas)
+class FeedforwardNN(nn.Module):
+    def __init__(self, input_size, hidden_size, output_size):
+        super().__init__()
+        self.fc1 = nn.Linear(input_size, hidden_size)
+        self.relu1 = nn.LeakyReLU(0.01)
+        self.fc2 = nn.Linear(hidden_size, hidden_size // 2)
+        self.relu2 = nn.LeakyReLU(0.01)
+        self.fc3 = nn.Linear(hidden_size // 2, output_size)
+        self.sigmoid = nn.Sigmoid()  # Activación final para clasificación binaria
+
+    def forward(self, x):
+        x = self.relu1(self.fc1(x))
+        x = self.relu2(self.fc2(x))
+        x = self.fc3(x)
+        #return self.sigmoid(x)  # Salida entre 0 y 1
+        return x # Para cuando uso BCEWithLogitsLoss. Usar lo de arriba si uso el BCE normal
