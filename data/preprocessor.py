@@ -3,7 +3,6 @@ import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 import torch
-from utils.clean_streams import clean_streams
 from utils.correlacion import correlacion_individual, correlacion_doble, correlacion_triple, correlacion_cuadruple
 
 _scaler = None # - el objeto StandardScaler que normaliza los datos numéricos.
@@ -17,9 +16,9 @@ def get_label_encoders():
       return _label_encoders
 def get_feature_names():
       columns = [
-            "artists",
-            "album_name",
-            "track_name",
+            #"artists",
+            #"album_name",
+            #"track_name",
             "duration_ms",
             "explicit",
             "energy",
@@ -29,8 +28,9 @@ def get_feature_names():
             "instrumentalness",
             "valence",
             "tempo",
-            "time_signature",
-            "track_genre"
+            #"time_signature",
+            "track_genre",
+            "release_date"
       ]
       return columns
 
@@ -39,7 +39,7 @@ def preprocess_data(path, target_column="popularity"):
 
       df = pd.read_csv(path, encoding='ISO-8859-1')
 
-      df = df.drop(columns=["numero", "track_id", "danceability", "key", "acousticness", "liveness"]) # Elimina columnas irrelevantes
+      df = df.drop(columns=["numero", "track_id", "danceability", "key", "acousticness", "liveness", "artists", "album_name", "track_name","time_signature"]) # Elimina columnas irrelevantes
 
       # Correlaciones entre diferentes atributos con el target. Util descomentar para cuando se vaya a escribir el informe y colocar la justificacion
       # de porque se eliminaron los atributos key, acousticness, liveness, danceability, ya que su correlacion incluso combinada con otros atributos
@@ -64,19 +64,16 @@ def preprocess_data(path, target_column="popularity"):
       print("Previsualización de los datos extraídos del CSV:")
       print(df.head())
 
-      # Aplicar función robusta de limpieza de popularity (convierte a int y maneja errores)
-      # df[target_column] = df[target_column].apply(clean_streams)  -> No es necesario ya que popularity ya viene como int en el CSV
-      
-      # Transformación logarítmica del target (tomar en cuenta luego el proceso inverso para interpretación)
-      # df[target_column] = np.log1p(df[target_column]) -> No es necesario ya que popularity ya viene entre 0 y 100 en el CSV y aplicar logaritmo puede 
-                                                      #    complicar la interpretacion de los resultados.      
-
       # Normalizamos duration_ms dividiendolo entre 1000 para convertirlo a segundos
       df["duration_ms"] = pd.to_numeric(df["duration_ms"], errors="coerce")
       df["duration_ms"] = df["duration_ms"] / 1000
 
+      # Transformamos la popularidad a un valor true o false (1 o 0) 
+      df['popularity'] = np.where(df['popularity'] >= 50, 1, 0) 
+
       # Codificación de columnas de texto a numeros para que el modelo pueda trabajar con ellos y guardar los encoders
-      for col in ["artists", "album_name", "track_name", "explicit", "track_genre"]:
+      # for col in ["artists", "album_name", "track_name", "explicit", "track_genre"]:
+      for col in ["explicit", "track_genre"]:      
             if col in df.columns:
                   encoder = LabelEncoder()
                   df[col] = encoder.fit_transform(df[col].astype(str))
@@ -106,4 +103,4 @@ def preprocess_data(path, target_column="popularity"):
       X_test_tensor = torch.tensor(X_test, dtype=torch.float32)
       y_test_tensor = torch.tensor(y_test.values, dtype=torch.float32).view(-1, 1)
 
-      return X_train_tensor, y_train_tensor, X_test_tensor, y_test_tensor # Datos que se usarán para entrenar y evaluar el modelo.'''
+      return X_train_tensor, y_train_tensor, X_test_tensor, y_test_tensor # Datos que se usarán para entrenar y evaluar el modelo.
