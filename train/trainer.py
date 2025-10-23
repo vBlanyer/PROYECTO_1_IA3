@@ -8,6 +8,7 @@ from torch.utils.data import DataLoader, TensorDataset
 # - optimizer: algoritmo de optimización (como torch.optim.Adam).
 # - epochs: número de veces que se recorre todo el dataset.
 # - batch_size: tamaño de cada lote de datos.
+# ESTE USA RMSE
 def train_model(model, X_train, y_train, criterion, optimizer, epochs=20, batch_size=32):
       dataset = TensorDataset(X_train, y_train) # Combina X_train y y_train en un solo objeto.
       loader = DataLoader(dataset, batch_size=batch_size, shuffle=True) # El DataLoader divide el dataset en lotes de tamaño batch_size y los
@@ -37,3 +38,33 @@ def train_model(model, X_train, y_train, criterion, optimizer, epochs=20, batch_
                   rmse_history.append(rmse)
             
       return rmse_history
+
+# ESTE USA BCE
+def train_model_bce(model, X_train, y_train, criterion, optimizer, epochs=20, batch_size=32):
+    dataset = TensorDataset(X_train, y_train)
+    loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+
+    bce_loss_history = []  # Historial de pérdida binaria
+
+    for epoch in range(epochs):
+        total_loss = 0
+        model.train()
+
+        for inputs, targets in loader:
+            outputs = model(inputs)
+            loss = criterion(outputs, targets)
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+            total_loss += loss.item()
+
+        print(f"Epoch {epoch+1}/{epochs}, BCE Loss: {total_loss:.4f}")
+
+        # Evaluación sobre todo el conjunto de entrenamiento
+        model.eval()
+        with torch.no_grad():
+            predictions = model(X_train)
+            loss_epoch = criterion(predictions, y_train).item()
+            bce_loss_history.append(loss_epoch)
+
+    return bce_loss_history
