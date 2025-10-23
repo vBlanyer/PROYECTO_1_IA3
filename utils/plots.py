@@ -1,4 +1,6 @@
 import matplotlib.pyplot as plt
+import numpy as np
+import matplotlib.pyplot as plt
 
 def covergence_rmse(rmse_history):
     """Grafica de la convergencia del RMSE (sobre el conjunto de entrenamiento)"""
@@ -11,7 +13,19 @@ def covergence_rmse(rmse_history):
     plt.grid(True)
     plt.tight_layout()
     plt.show()
-    
+
+def convergence_bce(bce_loss_history):
+    """Gráfica de la convergencia de la pérdida binaria (BCELoss) durante el entrenamiento"""
+
+    plt.figure(figsize=(8, 5))
+    plt.plot(bce_loss_history, marker='o', linestyle='-', color='purple')
+    plt.xlabel('Época')
+    plt.ylabel('BCELoss')
+    plt.title('Convergencia de la pérdida binaria durante el entrenamiento')
+    plt.grid(True)
+    plt.tight_layout()
+    plt.show()
+  
 def real_vs_predict(y_test, loaded_predictions):
     """Grafica de los valores reales del conjunto de prueba vs los valores predichos por el modelo"""
     
@@ -29,4 +43,3 @@ def real_vs_predict(y_test, loaded_predictions):
     plt.grid(True)
     plt.tight_layout()
     plt.show()
-    
