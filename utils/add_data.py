@@ -24,9 +24,21 @@ def fetch_track_info_batch(track_ids):
         if not track:
             continue
         tid = track["id"]
-        release_date = track.get("album", {}).get("release_date")
+        release_date_full = track.get("album", {}).get("release_date")
+
+        if not release_date_full:
+            continue  # Si no hay fecha, descarta el track
+
+        release_year = release_date_full[:4]
+
         popularity = track.get("popularity")
-        info[tid] = {"release_date": release_date, "popularity": popularity}
+
+        # Validación: debe ser un número entre 0 y 100 la popularidad
+        if popularity is None or not (0 <= popularity <= 100):
+            print("track invalido en popularidad")
+            continue    
+        info[tid] = {"release_date": release_year, "popularity": popularity}
+
     return info
 
 
@@ -45,7 +57,7 @@ def process_file(input_path, output_path, query_col="track_id", encoding="utf-8"
     if "popularity" not in df.columns:
         df["popularity"] = pd.NA
 
-    # ✅ Procesar TODAS las filas (sin filtro de NaN)
+    # Procesar TODAS las filas (sin filtro de NaN)
     pending = df[query_col].dropna().astype(str).unique().tolist()
 
     total = len(pending)
@@ -61,7 +73,7 @@ def process_file(input_path, output_path, query_col="track_id", encoding="utf-8"
                 time.sleep(2)
                 continue
 
-            # ⚠️ Reportar tracks no encontrados
+            #  Reportar tracks no encontrados
             if len(batch_info) < len(batch):
                 missing = set(batch) - set(batch_info.keys())
                 if missing:
@@ -86,7 +98,7 @@ def process_file(input_path, output_path, query_col="track_id", encoding="utf-8"
 
     # Guardado final
     df.to_csv(output_path, index=False)
-    logging.info("✅ Guardado final en %s", output_path)
+    logging.info("Guardado final en %s", output_path)
     return output_path
 
 
