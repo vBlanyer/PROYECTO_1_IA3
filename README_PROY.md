@@ -22,9 +22,9 @@ A
 ```
 PROYECTO_1_IA3/
 ├── data/
-│└── dataset_cleaned.csv          # Conjunto de datos limpio inicial
-│└── preprocessor.py              # Limpieza y preparación de los datos
-│└── spotify_tracks_updated.csv    # Conjunto de datos actualizado (con release_date y popularidad mas reciente)
+│   └── dataset_cleaned.csv          # Conjunto de datos limpio inicial
+│   └── preprocessor.py              # Limpieza y preparación de los datos
+│   └── spotify_tracks_updated.csv    # Conjunto de datos actualizado (con release_date y popularidad mas reciente)
 ├── models/
 │   └── feedforward.py            # Definición del modelo (capas, activaciones)
 ├── train/
