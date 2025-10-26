@@ -44,6 +44,7 @@ PROYECTO_1_IA3/
 
 Actualmente el modelo no realiza una limpieza de datos, ya que el conjunto ya fue limpiado. Se realiza es un preprocesamiento, como eliminar atributos innecesarios y normalizaciones.
 Se trabaja es con el conjunto de datos spotify_tracks_updated.csv ya que es que tiene el atributo agregado release_date. 
+
 La red tiene actualmente dos capas ocultas, con LeakyReLU como función de activacion entre las capas, y Sigmoide como función de activación para la capa output. 
 Como función de pérdida se esta usando BCEWithLogitsLoss. 
 
