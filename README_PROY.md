@@ -22,21 +22,33 @@ A
 ```
 PROYECTO_1_IA3/
 ├── data/
-│   └── preprocessor.py           # Limpieza y preparación de los datos
+│└── dataset_cleaned.csv          # Conjunto de datos limpio inicial
+│└── preprocessor.py              # Limpieza y preparación de los datos
+│└── spotify_tracks_updated.csv    # Conjunto de datos actualizado (con release_date y popularidad mas reciente)
 ├── models/
 │   └── feedforward.py            # Definición del modelo (capas, activaciones)
 ├── train/
 │   └── trainer.py                # Lógica de entrenamiento, batching y validación
 ├── utils/
+│   ├── add_data.py               # Conexion de API de Spotify, agrega atributo release_date al conjunto y actualiza la popullaridad
 │   ├── config.py                 # Hiperparámetros y rutas
+│   ├── correlacion.py            # Calcula la correlacion de los atributos con la popularidad
 │   ├── predict_manual.py         # Predicción interactiva
 │   ├── predict_from_csv.py       # Predicción masiva por CSV
 │   ├── clean_lines.py            # Limpieza de líneas dañadas del CSV
 │   └── plots.py                  # Gráficas de pérdida y comparación
 ├── saved_models/                 # Modelos entrenados (.pth)
 ├── main.py                       # Script principal (menú de ejecución)
-└── requirements.txt              # Dependencias
 ```
+## Estado Actual
+
+Actualmente el modelo no realiza una limpieza de datos, ya que el conjunto ya fue limpiado. Se realiza es un preprocesamiento, como eliminar atributos innecesarios y normalizaciones.
+Se trabaja es con el conjunto de datos spotify_tracks_updated.csv ya que es que tiene el atributo agregado release_date. 
+La red tiene actualmente dos capas ocultas, con LeakyReLU como función de activacion entre las capas, y Sigmoide como función de activación para la capa output. 
+Como función de pérdida se esta usando BCEWithLogitsLoss. 
+
+El proceso actualmente realiza un preprocesamiento de los datos, entrenamiento de la red, guardado y carga del modelo entrenado y prueba del modelo con el conjunto de prueba, 
+previamente extraido en la fase de preprocesamiento.
 
 
 ## Parametros configurables
@@ -44,15 +56,15 @@ PROYECTO_1_IA3/
 Los parámetros principales se encuentran en `utils/config.py`:
 
 ```python
-data_path = data/dataset.csv # Ruta al dataset original
-data_path_cleaned = data/dataset_cleaned.csv # Ruta al dataset limpio
+data_path = data/spotify_tracks_updated.csv # Ruta al dataset original (se usa el mismo ya que ya se realizó la limpieza)
+data_path_cleaned = data/spotify_tracks_updated.csv # Ruta al dataset limpio
 input_size = 18 # Número de características de entrada
-hidden_size = 64 # Neuronas en capas ocultas
+hidden_size = 128 # Neuronas en capas ocultas
 output_size = 1 # Neuronas en capa de salida
 batch_size = 32 # Tamaño de lote para entrenamiento
 learning_rate = 0.001 # Tasa de aprendizaje
-epochs = 300 # Número de épocas de entrenamiento
-test_path = data/dataset_cleaned.csv # Ruta al dataset de prueba
+epochs = 200 # Número de épocas de entrenamiento
+test_path = data/spotify_tracks_updated.csv # Ruta al dataset de prueba
 ```
 
 ## Ejecución
