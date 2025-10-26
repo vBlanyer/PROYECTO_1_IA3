@@ -33,7 +33,7 @@ PROYECTO_1_IA3/
 │   ├── add_data.py               # Conexion de API de Spotify, agrega atributo release_date al conjunto y actualiza la popullaridad
 │   ├── config.py                 # Hiperparámetros y rutas
 │   ├── correlacion.py            # Calcula la correlacion de los atributos con la popularidad
-│   ├── predict_manual.py         # Predicción interactiva
+│   ├── predict_manual.py         # Predicción interactiva (No fue actualizada para su uso actual, se recomienda no usar)
 │   ├── predict_from_csv.py       # Predicción masiva por CSV
 │   ├── clean_lines.py            # Limpieza de líneas dañadas del CSV
 │   └── plots.py                  # Gráficas de pérdida y comparación
@@ -52,7 +52,7 @@ El proceso actualmente realiza un preprocesamiento de los datos, entrenamiento d
 previamente extraido en la fase de preprocesamiento.
 
 
-## Parametros configurables
+## Parámetros configurables
 
 Los parámetros principales se encuentran en `utils/config.py`:
 
